@@ -76,19 +76,20 @@ export default async function handler(req, res) {
       } catch (jsonError) {
         console.error('JSON parsing error:', jsonError);
         const text = await response.text();
+        console.error('Response text (first 500 chars):', text.substring(0, 500));
         return res.status(response.status).json({ 
           error: { 
-            message: 'Invalid JSON response from Gemini API: ' + text.substring(0, 200)
+            message: 'Invalid JSON response from Gemini API'
           } 
         });
       }
     } else {
       // Non-JSON response (e.g., plain text error)
       const text = await response.text();
-      console.error('Non-JSON response from Gemini API:', text.substring(0, 200));
+      console.error('Non-JSON response from Gemini API (first 500 chars):', text.substring(0, 500));
       return res.status(response.status).json({ 
         error: { 
-          message: 'Non-JSON response from Gemini API: ' + text.substring(0, 200)
+          message: 'Unexpected response format from Gemini API'
         } 
       });
     }
