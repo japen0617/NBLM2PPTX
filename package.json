@@ -1,0 +1,21 @@
+{
+  "name": "nblm2pptx",
+  "version": "2.0.0",
+  "description": "AI-powered text removal from images with OCR and PPTX export",
+  "type": "module",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "keywords": [
+    "ai",
+    "gemini",
+    "ocr",
+    "pptx",
+    "image-processing"
+  ],
+  "author": "",
+  "license": "MIT"
+}
