@@ -50,10 +50,11 @@ export default async function handler(req, res) {
     try {
       data = JSON.parse(responseText);
     } catch (parseError) {
-      // If JSON parsing fails, return the raw response
+      // If JSON parsing fails, log server-side and return generic error
+      console.error('Failed to parse Gemini API response:', parseError);
       return res.status(response.status).json({
         error: {
-          message: `Failed to parse Gemini API response: ${responseText.substring(0, 200)}`,
+          message: 'Failed to parse API response',
         },
       });
     }
@@ -62,10 +63,11 @@ export default async function handler(req, res) {
     return res.status(response.status).json(data);
 
   } catch (error) {
-    console.error('Proxy error:', error);
+    // Log error server-side without exposing sensitive details to client
+    console.error('Proxy error:', error.message);
     return res.status(500).json({ 
       error: { 
-        message: error.message || 'Internal server error' 
+        message: 'Internal server error' 
       } 
     });
   }
