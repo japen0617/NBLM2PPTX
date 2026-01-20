@@ -140,8 +140,6 @@
     <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-2xl shadow-2xl opacity-0 transition-all pointer-events-none z-50 text-sm font-bold border border-slate-700"></div>
 
     <script>
-        const apiKey = "";
-
         // Canvas 環境使用穩定版模型
         const MODEL_IMAGE_EDIT = "gemini-2.5-flash-image";  // 圖像生成/編輯
         const MODEL_TEXT_GEN = "gemini-2.5-flash";           // 文字生成 (OCR)
@@ -664,8 +662,6 @@
         }
 
         async function removeTextWithGemini(base64) {
-            const baseUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_IMAGE_EDIT}:generateContent`;
-            const url = apiKey ? `${baseUrl}?key=${apiKey}` : baseUrl;
             const payload = {
                 contents: [{
                     role: "user",
@@ -677,10 +673,10 @@
                 generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
             };
 
-            const data = await fetchWithRetry(url, {
+            const data = await fetchWithRetry('/api/proxy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ model: MODEL_IMAGE_EDIT, payload })
             });
 
             const part = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
@@ -698,8 +694,6 @@
         }
 
         async function ocrWithGemini(base64) {
-            const baseUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_TEXT_GEN}:generateContent`;
-            const url = apiKey ? `${baseUrl}?key=${apiKey}` : baseUrl;
             const payload = {
                 contents: [{
                     parts: [
@@ -741,10 +735,10 @@ Return as JSON array. Be precise with bounding boxes.`
                 }
             };
 
-            const data = await fetchWithRetry(url, {
+            const data = await fetchWithRetry('/api/proxy', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify({ model: MODEL_TEXT_GEN, payload })
             });
 
             if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
